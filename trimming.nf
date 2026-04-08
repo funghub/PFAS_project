@@ -6,6 +6,20 @@
 
 // nextflow.enable.dsl=2
 
+if (params.help) {
+    log.info """
+    FASTQ files -> FASTP trimmed files -> FASTQC files-> MULTIQC report Pipeline
+    ----------------------
+    Usage:
+    nextflow run funghub/PFAS_project --input [folder of fastq files] --outdir [location for results]
+
+    Options:
+      --input    Path to input FASTQ files (keep in quotes!) (default: "PRJNA1137368" SRA accession number I used)
+      --outdir   Directory to save results (default: results)
+    """
+    exit 0
+}
+
 process header {
     script:
     """
