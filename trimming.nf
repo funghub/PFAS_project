@@ -90,7 +90,10 @@ process MULTIQC {
 //     input = 'test_multiqc/*.fastq' // assuming cd into test_runs (don't need path b/c already channel.fromPath)
 
 // }
-params.input = 'test_multiqc/*.fastq'
+
+// make sure you CD is /PFAS_Data_NF
+// params.input = 'test_multiqc/*.fastq'
+params.input = 'PRJNA1137368/*.fastq'
 
 
 workflow {
