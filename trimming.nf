@@ -32,7 +32,7 @@ process footer {
 }
 
 process FASTP {
-    conda "bioconda::fastp"
+    conda "bioconda::fastp=0.12.1" // using latest version might rid error of java.lang openjdk
     // publishDir "PFAS_Data_NF/${task.index}/fastp_results", mode: 'copy'
 
     input:
