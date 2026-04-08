@@ -104,6 +104,10 @@ params.output_dir = 'results'     // Default output directory
 params.input = "${params.input_dir}/*.fastq"
 
 
+// params.help = false  // Set the default to false
+include { paramsHelp } from 'plugin/nf-schema'
+
+
 workflow {
 
     if (params.help) {
