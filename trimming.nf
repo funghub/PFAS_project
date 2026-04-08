@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 // Command used, but now run through github, replace file with link
-// nextflow run funghub/PFAS_project -profile spartan_hpc
+// nextflow run funghub/PFAS_project -profile spartan_hpc -latest -resume
 // nextflow run trimming.nf -profile spartan_hpc
 
 // nextflow.enable.dsl=2
