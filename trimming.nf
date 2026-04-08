@@ -75,7 +75,7 @@ process MULTIQC {
 
     script:
     """
-    multiqc reports
+    multiqc ${reports}
     """
 }
 
