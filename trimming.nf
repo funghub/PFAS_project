@@ -6,20 +6,6 @@
 
 // nextflow.enable.dsl=2
 
-if (params.help) {
-    log.info """
-    FASTQ files -> FASTP trimmed files -> FASTQC files-> MULTIQC report Pipeline
-    ----------------------
-    Usage:
-    nextflow run funghub/PFAS_project --input [folder of fastq files] --outdir [location for results]
-
-    Options:
-      --input    Path to input FASTQ files (keep in quotes!) (default: "PRJNA1137368" SRA accession number I used)
-      --outdir   Directory to save results (default: results)
-    """
-    exit 0
-}
-
 process header {
     script:
     """
@@ -111,6 +97,7 @@ process MULTIQC {
 
 // make sure you CD is /PFAS_Data_NF
 // params.input = 'test_multiqc/*.fastq'
+
 // Add ability for user to insert location of fastq files and output folder
 params.input_dir = 'PRJNA1137368' // Default input directory
 params.output_dir = 'results'     // Default output directory
@@ -118,6 +105,20 @@ params.input = "${params.input_dir}/*.fastq"
 
 
 workflow {
+
+    if (params.help) {
+    log.info """
+    FASTQ files -> FASTP trimmed files -> FASTQC files-> MULTIQC report Pipeline
+    ----------------------
+    Usage:
+    nextflow run funghub/PFAS_project --input [folder of fastq files] --outdir [location for results]
+
+    Options:
+      --input    Path to input FASTQ files (keep in quotes!) (default: "PRJNA1137368" SRA accession number I used)
+      --outdir   Directory to save results (default: results)
+    """
+    exit 0
+    }
 
     main:
 
