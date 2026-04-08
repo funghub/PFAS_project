@@ -32,7 +32,7 @@ process footer {
 }
 
 process FASTP {
-    conda "bioconda::fgemeastp"
+    conda "bioconda::fastp"
     // publishDir "PFAS_Data_NF/${task.index}/fastp_results", mode: 'copy'
 
     input:
