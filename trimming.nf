@@ -1,5 +1,6 @@
 #!/usr/bin/env nextflow
 
+// Command used, but now run through github, replace file with link
 // nextflow run trimming.nf -profile spartan_hpc
 
 // nextflow.enable.dsl=2
