@@ -97,6 +97,7 @@ process MULTIQC {
 
 // make sure you CD is /PFAS_Data_NF
 // params.input = 'test_multiqc/*.fastq'
+// maybe in the future, add ability for user to insert location of fastq files
 params.input = 'PRJNA1137368/*.fastq'
 
 
