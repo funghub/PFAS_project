@@ -107,10 +107,7 @@ params.input = "${params.input_dir}/*.fastq"
 params.help = false  // Set the default to false
 include { paramsHelp } from 'plugin/nf-schema'
 
-
-workflow {
-
-    if (params.help) {
+if (params.help) {
     log.info """
     FASTQ files -> FASTP trimmed files -> FASTQC files-> MULTIQC report Pipeline
     ----------------------
@@ -122,7 +119,9 @@ workflow {
       --outdir   Directory to save results (default: results)
     """
     exit 0
-    }
+}
+
+workflow {
 
     main:
 
