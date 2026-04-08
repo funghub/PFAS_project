@@ -97,8 +97,10 @@ process MULTIQC {
 
 // make sure you CD is /PFAS_Data_NF
 // params.input = 'test_multiqc/*.fastq'
-// maybe in the future, add ability for user to insert location of fastq files
-params.input = 'PRJNA1137368/*.fastq'
+// Add ability for user to insert location of fastq files and output folder
+params.input_dir = 'PRJNA1137368' // Default input directory
+params.output_dir = 'results'     // Default output directory
+params.input = "${params.input_dir}/*.fastq"
 
 
 workflow {
@@ -130,25 +132,25 @@ workflow {
 output {
     // KEEP
     fastp_trimmed {
-        path "PFAS_Data_NF/fastp_results/trimmed" // tells where to save outputs to
+        path "${params.output_dir}/fastp_results/trimmed" // tells where to save outputs to
         // without mode copy below, we are softlinking
         mode 'copy'
     }
 
     fastp_reports {
-        path "PFAS_Data_NF/fastp_results/reports" // tells where to save outputs to
+        path "${params.output_dir}/fastp_results/reports" // tells where to save outputs to
         // without mode copy below, we are softlinking
         mode 'copy'
     }
 
     // KEEP
     fastqc_results {
-        path "PFAS_Data_NF/fastqc_results"
+        path "${params.output_dir}/fastqc_results"
         mode 'copy'
     }
 
     multiqc_results {
-        path "PFAS_Data_NF/multi_qc_results"
+        path "${params.output_dir}/multi_qc_results"
         mode 'copy'
     }
     
