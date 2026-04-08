@@ -107,7 +107,12 @@ params.input = "${params.input_dir}/*.fastq"
 params.help = false  // Set the default to false
 include { paramsHelp } from 'plugin/nf-schema'
 
-if (params.help) {
+
+workflow {
+
+    main:
+
+    if (params.help) {
     log.info """
     FASTQ files -> FASTP trimmed files -> FASTQC files-> MULTIQC report Pipeline
     ----------------------
@@ -119,11 +124,8 @@ if (params.help) {
       --outdir   Directory to save results (default: results)
     """
     exit 0
-}
+    }
 
-workflow {
-
-    main:
 
     def files_ch = channel.fromPath(params.input) // def for variable: Added def before files_ch for strict syntax compatibility
     
