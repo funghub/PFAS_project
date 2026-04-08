@@ -1,5 +1,7 @@
 #!/usr/bin/env nextflow
 
+// nextflow run trimming.nf -profile spartan_hpc
+
 // nextflow.enable.dsl=2
 
 process header {
