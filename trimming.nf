@@ -229,7 +229,7 @@ workflow {
     star_alignment = STAR_align.out.star_alignment
     star_logs = STAR_align.out.star_logs
 
-    samtools_index = samtools_index.out.bai_files
+    bai_files = samtools_index.out.bai_files
 
 }
 
@@ -274,8 +274,8 @@ output {
     }
 
     // all the BAI files per BAM file
-    samtools_index {
-        path "${params.output_dir}/samtools_index"
+    bai_files {
+        path "${params.output_dir}/STAR_alignment"
         mode 'copy'
     }
 }
