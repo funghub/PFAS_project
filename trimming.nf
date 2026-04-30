@@ -83,6 +83,58 @@ process MULTIQC {
     """
 }
 
+process STAR_index {
+    conda "bioconda::star"
+    
+    output:
+    path "STAR_hg38_index", emit: star_index
+
+    script:
+    """
+    # get genome assembly and get only chr files
+    wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.chromFa.tar.gz
+    mkdir Genome_Assembly
+    tar -xvf hg38.chromFa.tar.gz -C Genome_Assembly
+    ls Genome_Assembly/chroms | grep -v -e "random" -e "alt" -e "chrUn" | xargs -I{} cat Genome_Assembly/chroms/{} > Genome_Assembly/chroms_all.fa
+
+    # get gene annotation gtf file
+    wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.ncbiRefSeq.gtf.gz
+    mkdir Genome_Annotation
+    gunzip -c hg38.ncbiRefSeq.gtf.gz > Genome_Annotation/hg38.ncbiRefSeq.gtf
+
+    mkdir STAR_hg38_index
+    
+    # create index
+    STAR --runThreadN ${task.cpus} \
+        --runMode genomeGenerate \
+        --genomeDir STAR_hg38_index \
+        --genomeFastaFiles Genome_Assembly/chroms_all.fa \
+        --sjdbGTFfile Genome_Annotation/hg38.ncbiRefSeq.gtf \
+        --sjdbOverhang 99
+    """
+}
+
+process STAR_align {
+    conda "bioconda::star"
+    
+    input:
+    path star_index
+    path trimmed_fastq
+
+    output:
+    path "*.bam", emit: star_alignment
+    path "*.{out, tab}", emit: star_logs
+
+    script:
+    """
+    # complete alignment
+    STAR --genomeDir ${star_index} \
+        --readFilesIn ${trimmed_fastq} \
+        --outFileNamePrefix ${trimmed_fastq.baseName}. \
+        --runThreadN ${task.cpus} \
+        --outSAMtype BAM SortedByCoordinate
+    """
+}
 
 /*
  * Pipeline parameters
@@ -132,15 +184,17 @@ workflow {
 
     def files_ch = channel.fromPath(params.input) // def for variable: Added def before files_ch for strict syntax compatibility
     
-    // header()
+    header()
 
     // prefetch missing here to download the sra files to complete the pipeline
     // fasterq-dump missing here, which is needed to convert SRA files to FASTQ files. We can add that in later, but for now we will just use FASTQ files as input.
     FASTP(files_ch)
     FASTQC(FASTP.out.trimmed) // .trimmed specifically refers to the emit name given
     MULTIQC(FASTQC.out.qc_files.collect()) // must use .colect() with () to work
+    STAR_index()
+    STAR_align(STAR_index.out.star_index, FASTP.out.trimmed)
 
-    // footer()
+    footer()
 
 
     publish:
@@ -150,6 +204,10 @@ workflow {
     fastqc_results = FASTQC.out.qc_files
     
     multiqc_results = MULTIQC.out.report
+
+    star_index = STAR_index.out.star_index
+    star_alignment = STAR_align.out.star_alignment
+    star_logs = STAR_align.out.star_logs
 }
 
 output {
@@ -176,5 +234,14 @@ output {
         path "${params.output_dir}/multi_qc_results"
         mode 'copy'
     }
-    
+
+    star_index {
+        path "${params.output_dir}/STAR_hg38_index"
+        mode 'copy'
+    }
+
+    star_alignment {
+        path "${params.output_dir}/STAR_alignment"
+        mode 'copy'
+    }
 }
