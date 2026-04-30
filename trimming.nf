@@ -184,7 +184,7 @@ workflow {
 
     def files_ch = channel.fromPath(params.input) // def for variable: Added def before files_ch for strict syntax compatibility
     
-    header()
+    // header()
 
     // prefetch missing here to download the sra files to complete the pipeline
     // fasterq-dump missing here, which is needed to convert SRA files to FASTQ files. We can add that in later, but for now we will just use FASTQ files as input.
@@ -194,7 +194,7 @@ workflow {
     STAR_index()
     STAR_align(STAR_index.out.star_index, FASTP.out.trimmed)
 
-    footer()
+    // footer()
 
 
     publish:
