@@ -143,7 +143,8 @@ process samtools_index { // for getting bai file from bam
     path star_alignment
 
     output:
-    path "${star_alignment.baseName}.bai", emit: bai_files
+    // path "${star_alignment.baseName}.bai", emit: bai_files
+    path "*.bai", emit: bai_files" // for a BAM file aln.bam, either aln.bam.bai will be created
 
     script:
     """
