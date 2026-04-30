@@ -1,5 +1,7 @@
 #!/usr/bin/env nextflow
 
+// REMEMBER TO CD into PFAS_Data_NF
+
 // Command used, but now run through github, replace file with link
 // nextflow run funghub/PFAS_project -profile spartan_hpc -latest -resume
 // nextflow run trimming.nf -profile spartan_hpc
@@ -200,7 +202,8 @@ workflow {
 
 
     def files_ch = channel.fromPath("${params.input_dir}/*.fastq") // def for variable: Added def before files_ch for strict syntax compatibility
-    
+        .ifEmpty { error "No .fastq files found in: ${params.input_dir}" }
+
     // header()
 
     // prefetch missing here to download the sra files to complete the pipeline
