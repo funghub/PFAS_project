@@ -123,7 +123,7 @@ process STAR_align {
 
     output:
     path "*.bam", emit: star_alignment
-    path "*.{out, tab}", emit: star_logs
+    path "*.{out,tab}", emit: star_logs
 
     script:
     """
@@ -153,7 +153,7 @@ process STAR_align {
 // Add ability for user to insert location of fastq files and output folder
 params.input_dir = 'PRJNA1137368' // Default input directory
 params.output_dir = 'results'     // Default output directory
-params.input = "${params.input_dir}/*.fastq"
+// params.input = "${params.input_dir}/*.fastq"
 
 
 params.help = false  // Set the default to false
@@ -182,7 +182,7 @@ workflow {
     }
 
 
-    def files_ch = channel.fromPath(params.input) // def for variable: Added def before files_ch for strict syntax compatibility
+    def files_ch = channel.fromPath("${params.input_dir}/*.fastq") // def for variable: Added def before files_ch for strict syntax compatibility
     
     // header()
 
