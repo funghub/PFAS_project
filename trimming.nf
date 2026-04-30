@@ -169,13 +169,13 @@ workflow {
     FASTQ files -> FASTP trimmed files -> FASTQC files-> MULTIQC report Pipeline
     ----------------------
     Usage:
-    nextflow run funghub/PFAS_project --input [folder of fastq files] --output_dir [folder for results] -profile spartan_hpc -latest -resume
+    nextflow run funghub/PFAS_project --input_dir [folder of fastq files] --output_dir [folder for results] -profile spartan_hpc -latest -resume
     
     Usage (default):
     nextflow run funghub/PFAS_project -profile spartan_hpc -latest -resume
 
     Options:
-      --input    Path to input FASTQ files (keep in quotes!) (default: "PRJNA1137368" SRA accession number I used)
+      --input_dir    Path to input FASTQ files (keep in quotes!) (default: "PRJNA1137368" SRA accession number I used)
       --output_dir   Directory to save results (default: results)
     """
     exit 0
