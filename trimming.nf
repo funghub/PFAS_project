@@ -277,4 +277,5 @@ output {
     samtools_index {
         path "${params.output_dir}/samtools_index"
         mode 'copy'
+    }
 }
