@@ -221,13 +221,13 @@ output {
     fastp_reports {
         path "${params.output_dir}/fastp_results/reports" // tells where to save outputs to
         // without mode copy below, we are softlinking
-        mode 'copy'
+        // mode 'copy'
     }
 
     // KEEP
     fastqc_results {
         path "${params.output_dir}/fastqc_results"
-        mode 'copy'
+        // mode 'copy'
     }
 
     multiqc_results {
@@ -237,11 +237,16 @@ output {
 
     star_index {
         path "${params.output_dir}/STAR_hg38_index"
-        mode 'copy'
+        // mode 'copy'
     }
 
     star_alignment {
         path "${params.output_dir}/STAR_alignment"
         mode 'copy'
+    }
+
+    star_logs {
+        path "${params.output_dir}/STAR_logs"
+        // mode 'copy'
     }
 }
