@@ -167,7 +167,7 @@ process samtools_flagstat {
     def prefix = star_alignment.name.replace("_trimmed.Aligned.sortedByCoord.out.bam","")
 
     """
-    samtools flagstat ${star_alignment}
+    samtools flagstat ${star_alignment} > ${prefix}_flagstat.txt
     """
 }
 
