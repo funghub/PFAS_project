@@ -154,6 +154,23 @@ process samtools_index { // for getting bai file from bam
     """
 }
 
+process samtools_flagstat {
+    conda "bioconda::samtools"
+    
+    input:
+    path star_alignment
+
+    output:
+    path "*.txt", emit: flagstat
+
+    script:
+    def prefix = star_alignment.name.replace("_trimmed.Aligned.sortedByCoord.out.bam","")
+
+    """
+    samtools flagstat ${star_alignment}
+    """
+}
+
 
 /*
  * Pipeline parameters
@@ -215,6 +232,7 @@ workflow {
     STAR_align(STAR_index.out.star_index, FASTP.out.trimmed)
 
     samtools_index(STAR_align.out.star_alignment)
+    samtools_flagstat(STAR_align.out.star_alignment)
 
 
     // footer()
@@ -233,6 +251,9 @@ workflow {
     star_logs = STAR_align.out.star_logs
 
     bai_files = samtools_index.out.bai_files
+
+    flagstat = samtools_flagstat.out.flagstat
+
 
 }
 
@@ -281,4 +302,10 @@ output {
         path "${params.output_dir}/STAR_alignment"
         mode 'copy'
     }
+
+    flagstat {
+        path "${params.output_dir}/STAR_flagstat"
+        // mode 'copy'
+    }
+
 }
