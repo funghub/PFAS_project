@@ -1,5 +1,6 @@
 #!/usr/bin/env nextflow
 
+// change file name to code.nf when finished
 // REMEMBER TO CD into PFAS_Data_NF
 
 // Command used, but now run through github, replace file with link
