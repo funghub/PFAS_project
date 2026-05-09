@@ -174,7 +174,7 @@ process samtools_flagstat {
 
 
 process picard_add_read_groups {
-    conda "bioconda::picard"
+    conda "bioconda::picard=3.3.0"
     
     input:
     path star_alignment
