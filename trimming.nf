@@ -173,6 +173,43 @@ process samtools_flagstat {
 }
 
 
+process picard_add_read_groups {
+    conda "bioconda::picard"
+    
+    input:
+    path star_alignment
+
+    output:
+    path "*.bam", emit: add_RG_bam
+
+    script:
+    def prefix = star_alignment.name.replace("_trimmed.Aligned.sortedByCoord.out.bam","")
+
+    """
+    # make sure to add back the read groups to the header of the BAM file
+    picard AddOrReplaceReadGroups I=${star_alignment} O=${prefix}_RG.bam RGID=${prefix} RGLB=lib_${prefix} RGPL=ILLUMINA RGPU=${prefix} RGSM=${prefix}
+    """
+}
+
+process picard_mark_duplicates {
+    conda "bioconda::picard"
+    
+    input:
+    path add_RG_bam
+
+    output:
+    path "*.bam", emit: marked_dups_bam
+    path "*metrics.txt", emit: marked_dups_metrics
+
+    script:
+    def prefix = add_RG_bam.name.replace("_RG.bam","")
+
+    """
+    picard MarkDuplicates I=${add_RG_bam} O=${prefix}_duplicates.bam M=${prefix}_dup_metrics.txt
+    """
+}
+
+
 /*
  * Pipeline parameters
  */
@@ -235,6 +272,9 @@ workflow {
     samtools_index(STAR_align.out.star_alignment)
     samtools_flagstat(STAR_align.out.star_alignment)
 
+    picard_add_read_groups(STAR_align.out.star_alignment)
+    picard_mark_duplicates(picard_add_read_groups.out.add_RG_bam)
+    
 
     // footer()
 
@@ -255,6 +295,10 @@ workflow {
 
     flagstat = samtools_flagstat.out.flagstat
 
+    add_read_groups_bam = picard_add_read_groups.out.add_RG_bam
+
+    marked_dups_bam = picard_mark_duplicates.out.marked_dups_bam
+    marked_dups_metrics = picard_mark_duplicates.out.marked_dups_metrics
 
 }
 
@@ -307,6 +351,21 @@ output {
     flagstat {
         path "${params.output_dir}/STAR_flagstat"
         // mode 'copy'
+    }
+
+    add_read_groups_bam {
+        path "${params.output_dir}/picard/add_RG_bam"
+        mode 'copy'
+    }
+
+    marked_dups_bam {
+        path "${params.output_dir}/picard/marked_dups_bam"
+        mode 'copy'
+    }
+
+    marked_dups_metrics {
+        path "${params.output_dir}/picard/marked_dups_metrics"
+        mode 'copy'
     }
 
 }
