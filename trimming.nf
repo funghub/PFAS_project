@@ -192,7 +192,7 @@ process picard_add_read_groups {
 }
 
 process picard_mark_duplicates {
-    conda "bioconda::picard"
+    conda "bioconda::picard=3.3.0"
     
     input:
     path add_RG_bam
