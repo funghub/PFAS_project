@@ -210,7 +210,7 @@ process picard_mark_duplicates {
 }
 
 process MULTIQC_markdups_flagstat {
-    conda "bioconda::multiqc=1.33"
+    conda "conda-forge::polars-lts-cpu bioconda::multiqc=1.33"
     
     input:
     path marked_dups_flagstat_metrics
