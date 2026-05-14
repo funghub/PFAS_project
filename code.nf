@@ -220,7 +220,7 @@ process MULTIQC_markdups_flagstat {
 
     script:
     """
-    multiqc ${marked_dups_flagstat_metrics}
+    multiqc ${marked_dups_flagstat_metrics} -n multiqc_markdups_flagstat
     """
 }
 
