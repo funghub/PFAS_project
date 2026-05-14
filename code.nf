@@ -209,6 +209,20 @@ process picard_mark_duplicates {
     """
 }
 
+process MULTIQC_markdups_flagstat {
+    conda "bioconda::multiqc"
+    
+    input:
+    path marked_dups_flagstat_metrics
+
+    output:
+    path "multiqc_markdups_flagstat.html", emit: report_markdups_flagstat
+
+    script:
+    """
+    multiqc ${marked_dups_flagstat_metrics}
+    """
+}
 
 /*
  * Pipeline parameters
@@ -274,6 +288,9 @@ workflow {
 
     picard_add_read_groups(STAR_align.out.star_alignment)
     picard_mark_duplicates(picard_add_read_groups.out.add_RG_bam)
+
+    // add in picard metrics file and mix channel with the outputs for samtools flagstat metrics
+    MULTIQC_markdups_flagstat(picard_mark_duplicates.out.marked_dups_metrics.collect().mix(samtools_flagstat.out.flagstat.collect()).collect())
     
 
     // footer()
@@ -299,6 +316,8 @@ workflow {
 
     marked_dups_bam = picard_mark_duplicates.out.marked_dups_bam
     marked_dups_metrics = picard_mark_duplicates.out.marked_dups_metrics
+
+    multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
 
 }
 
@@ -368,4 +387,8 @@ output {
         mode 'copy'
     }
 
+    multiqc_markdups_flagstat {
+        path "${params.output_dir}/multi_qc_results"
+        mode 'copy'
+    }
 }
