@@ -271,8 +271,8 @@ include { paramsHelp } from 'plugin/nf-schema'
 // Module aliases to reuse processes but have different outputs!
 // https://training.nextflow.io/2.0/basic_training/modules/#module-aliases
 // https://stackoverflow.com/questions/76730547/how-to-reuse-the-same-process-twice-in-within-the-same-module-in-nextflow-dsl2
-include { feature_counts as feature_counts_raw } from './modules/feature_counts'
-include { feature_counts as feature_counts_markdups } from './modules/feature_counts'
+// include { feature_counts as feature_counts_raw } from './modules/feature_counts'
+// include { feature_counts as feature_counts_markdups } from './modules/feature_counts'
 
 
 workflow {
@@ -320,9 +320,9 @@ workflow {
     MULTIQC_markdups_flagstat(picard_mark_duplicates.out.marked_dups_metrics.collect().mix(samtools_flagstat.out.flagstat.collect()).collect())
     
     // feature counts for without marked duplications!!!
-    feature_counts_raw(STAR_align.out.star_alignment.collect(), STAR_index.out.gtf_file, "raw")
+    feature_counts(STAR_align.out.star_alignment.collect(), STAR_index.out.gtf_file, "raw")
     // feature counts for with marked duplications!!!
-    feature_counts_markdups(picard_mark_duplicates.out.marked_dups_bam.collect(), STAR_index.out.gtf_file, "markdups")
+    feature_counts(picard_mark_duplicates.out.marked_dups_bam.collect(), STAR_index.out.gtf_file, "markdups")
     
 
     // footer()
