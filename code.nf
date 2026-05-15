@@ -278,9 +278,9 @@ process feature_counts_markdups {
 // make sure you CD is /PFAS_Data_NF
 // params.input = 'test_multiqc/*.fastq'
 
-// Add ability for user to insert location of fastq files and output folder
-params.input_dir = 'PRJNA1137368' // Default input directory
-params.output_dir = 'results'     // Default output directory
+// Add ability for user to insert location of fastq files and output folder (moved to config)
+// params.input_dir = 'PRJNA1137368' // Default input directory
+// params.output_dir = 'results'     // Default output directory
 // params.input = "${params.input_dir}/*.fastq"
 
 
@@ -372,11 +372,11 @@ workflow {
     multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
 
     // // feature counts for without marked duplications!!!
-    // featurecounts_raw = feature_counts_raw.out.counts
-    // featurecounts_summary_raw = feature_counts_raw.out.summary
+    featurecounts_raw = feature_counts_raw.out.counts
+    featurecounts_summary_raw = feature_counts_raw.out.summary
 
-    // featurecounts_markdups = feature_counts_markdups.out.counts
-    // featurecounts_summary_markdups = feature_counts_markdups.out.summary
+    featurecounts_markdups = feature_counts_markdups.out.counts
+    featurecounts_summary_markdups = feature_counts_markdups.out.summary
 
 }
 
@@ -456,7 +456,17 @@ output {
         mode 'copy'
     }
 
+    featurecounts_summary_raw {
+        path "${params.output_dir}/featurecounts"
+        mode 'copy'
+    }
+
     featurecounts_markdups {
+        path "${params.output_dir}/featurecounts"
+        mode 'copy'
+    }
+
+    featurecounts_summary_markdups {
         path "${params.output_dir}/featurecounts"
         mode 'copy'
     }
