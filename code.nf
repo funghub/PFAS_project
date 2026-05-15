@@ -270,6 +270,7 @@ include { paramsHelp } from 'plugin/nf-schema'
 
 // Module aliases to reuse processes but have different outputs!
 // https://training.nextflow.io/2.0/basic_training/modules/#module-aliases
+// https://stackoverflow.com/questions/76730547/how-to-reuse-the-same-process-twice-in-within-the-same-module-in-nextflow-dsl2
 include { feature_counts as feature_counts_raw } from './modules/feature_counts'
 include { feature_counts as feature_counts_markdups } from './modules/feature_counts'
 
