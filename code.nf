@@ -342,6 +342,7 @@ workflow {
     multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
 
     featurecounts = feature_counts.out.counts
+    featurecounts_summary = feature_counts.out.summary
 
 }
 
@@ -417,6 +418,11 @@ output {
     }
 
     featurecounts {
+        path "${params.output_dir}/featurecounts"
+        mode 'copy'
+    }
+
+    featurecounts_summary {
         path "${params.output_dir}/featurecounts"
         mode 'copy'
     }
