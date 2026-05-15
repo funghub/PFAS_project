@@ -225,13 +225,32 @@ process MULTIQC_markdups_flagstat {
     """
 }
 
-process feature_counts {
+process feature_counts_raw {
     conda "bioconda::subread"
     
     input:
     path bam_files
     path gtf_file
     val prefix      // because of Module aliases, add prefix
+    // val prefix is for _raw or _markdups (added as an input to when calling the process in workflow)
+
+    output:
+    path "${prefix}_counts.txt", emit: counts
+    path "${prefix}_counts.txt.summary", emit: summary
+
+    script:
+    """
+    featureCounts -T ${task.cpus} -a ${gtf_file} -t exon -g gene_id -o ${prefix}_counts.txt ${bam_files}
+    """
+}
+
+process feature_counts_markdups {
+    conda "bioconda::subread"
+    
+    input:
+    path bam_files
+    path gtf_file
+    val prefix      // because of Module aliases, add prefix, forget it: Module aliases must be from a separate .nf
     // val prefix is for _raw or _markdups (added as an input to when calling the process in workflow)
 
     output:
@@ -268,7 +287,8 @@ process feature_counts {
 params.help = false  // Set the default to false
 include { paramsHelp } from 'plugin/nf-schema'
 
-// Module aliases to reuse processes but have different outputs!
+// Module aliases to reuse processes but have different outputs!: didn't work
+// feature_counts must be located in separate .nf file
 // https://training.nextflow.io/2.0/basic_training/modules/#module-aliases
 // https://stackoverflow.com/questions/76730547/how-to-reuse-the-same-process-twice-in-within-the-same-module-in-nextflow-dsl2
 // include { feature_counts as feature_counts_raw } from './modules/feature_counts'
@@ -320,9 +340,9 @@ workflow {
     MULTIQC_markdups_flagstat(picard_mark_duplicates.out.marked_dups_metrics.collect().mix(samtools_flagstat.out.flagstat.collect()).collect())
     
     // feature counts for without marked duplications!!!
-    feature_counts(STAR_align.out.star_alignment.collect(), STAR_index.out.gtf_file, "raw")
+    feature_counts_raw(STAR_align.out.star_alignment.collect(), STAR_index.out.gtf_file, "raw")
     // feature counts for with marked duplications!!!
-    feature_counts(picard_mark_duplicates.out.marked_dups_bam.collect(), STAR_index.out.gtf_file, "markdups")
+    feature_counts_markdups(picard_mark_duplicates.out.marked_dups_bam.collect(), STAR_index.out.gtf_file, "markdups")
     
 
     // footer()
@@ -351,9 +371,12 @@ workflow {
 
     multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
 
-    // feature counts for without marked duplications!!!
-    featurecounts = feature_counts.out.counts
-    featurecounts_summary = feature_counts.out.summary
+    // // feature counts for without marked duplications!!!
+    // featurecounts_raw = feature_counts_raw.out.counts
+    // featurecounts_summary_raw = feature_counts_raw.out.summary
+
+    // featurecounts_markdups = feature_counts_markdups.out.counts
+    // featurecounts_summary_markdups = feature_counts_markdups.out.summary
 
 }
 
@@ -428,12 +451,12 @@ output {
         mode 'copy'
     }
 
-    featurecounts {
+    featurecounts_raw {
         path "${params.output_dir}/featurecounts"
         mode 'copy'
     }
 
-    featurecounts_summary {
+    featurecounts_markdups {
         path "${params.output_dir}/featurecounts"
         mode 'copy'
     }
