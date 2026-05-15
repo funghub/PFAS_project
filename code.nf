@@ -91,6 +91,7 @@ process STAR_index {
     
     output:
     path "STAR_hg38_index", emit: star_index
+    path "Genome_Annotation/hg38.ncbiRefSeq.gtf", emit: gtf_file
 
     script:
     """
@@ -224,6 +225,24 @@ process MULTIQC_markdups_flagstat {
     """
 }
 
+process feature_counts {
+    conda "bioconda::subread"
+    
+    input:
+    path bam_files
+    path gtf_file
+
+    output:
+    path "counts.txt", emit: counts
+    path "counts.txt.summary", emit: summary
+
+    script:
+    """
+    featureCounts -T ${task.cpus} -a ${gtf_file} -t exon -g gene_id -o counts.txt ${bam_files}
+    """
+}
+
+
 /*
  * Pipeline parameters
  */
@@ -292,6 +311,8 @@ workflow {
     // add in picard metrics file and mix channel with the outputs for samtools flagstat metrics
     MULTIQC_markdups_flagstat(picard_mark_duplicates.out.marked_dups_metrics.collect().mix(samtools_flagstat.out.flagstat.collect()).collect())
     
+    // feature_counts(picard_mark_duplicates.out.marked_dups_bam)
+    feature_counts(STAR_align.out.star_alignment.collect(), STAR_index.out.gtf_file)
 
     // footer()
 
@@ -318,6 +339,8 @@ workflow {
     marked_dups_metrics = picard_mark_duplicates.out.marked_dups_metrics
 
     multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
+
+    featurecounts = feature_counts.out.counts
 
 }
 
@@ -389,6 +412,11 @@ output {
 
     multiqc_markdups_flagstat {
         path "${params.output_dir}/multi_qc_results"
+        mode 'copy'
+    }
+
+    featurecounts {
+        path "${params.output_dir}/featurecounts"
         mode 'copy'
     }
 }
