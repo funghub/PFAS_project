@@ -312,6 +312,7 @@ workflow {
     MULTIQC_markdups_flagstat(picard_mark_duplicates.out.marked_dups_metrics.collect().mix(samtools_flagstat.out.flagstat.collect()).collect())
     
     // feature_counts(picard_mark_duplicates.out.marked_dups_bam)
+    // don't take the marked dup counts for feature counts
     feature_counts(STAR_align.out.star_alignment.collect(), STAR_index.out.gtf_file)
 
     // footer()
