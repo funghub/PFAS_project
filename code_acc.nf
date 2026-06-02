@@ -389,7 +389,7 @@ workflow {
     nextflow run funghub/PFAS_project --input PRJNA604830 -profile spartan_hpc -latest -resume
 
     Options:
-      --input    Path to input SRA accession number (no default value)
+      --input    Input SRA accession number (no default value)
       --output_dir   Directory to save results (default: results)
     """
     exit 0
