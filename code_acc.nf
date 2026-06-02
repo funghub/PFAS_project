@@ -387,25 +387,26 @@ workflow {
     fastqc_pretrim(retrieve_fastq.out.pretrim_fastq)
     MULTIQC_pretrim(fastqc_pretrim.out.pretrim_qc_files.collect())
     
-    FASTP(retrieve_fastq.out.pretrim_fastq)
-    FASTQC(FASTP.out.trimmed) // .trimmed specifically refers to the emit name given
-    MULTIQC(FASTQC.out.qc_files.collect()) // must use .colect() with () to work
-    STAR_index()
-    STAR_align(STAR_index.out.star_index, FASTP.out.trimmed)
+    // comment out below if need to verify multiqc report first 
+    // FASTP(retrieve_fastq.out.pretrim_fastq)
+    // FASTQC(FASTP.out.trimmed) // .trimmed specifically refers to the emit name given
+    // MULTIQC(FASTQC.out.qc_files.collect()) // must use .colect() with () to work
+    // STAR_index()
+    // STAR_align(STAR_index.out.star_index, FASTP.out.trimmed)
 
-    samtools_index(STAR_align.out.star_alignment)
-    samtools_flagstat(STAR_align.out.star_alignment)
+    // samtools_index(STAR_align.out.star_alignment)
+    // samtools_flagstat(STAR_align.out.star_alignment)
 
-    picard_add_read_groups(STAR_align.out.star_alignment)
-    picard_mark_duplicates(picard_add_read_groups.out.add_RG_bam)
+    // picard_add_read_groups(STAR_align.out.star_alignment)
+    // picard_mark_duplicates(picard_add_read_groups.out.add_RG_bam)
 
-    // add in picard metrics file and mix channel with the outputs for samtools flagstat metrics
-    MULTIQC_markdups_flagstat(picard_mark_duplicates.out.marked_dups_metrics.collect().mix(samtools_flagstat.out.flagstat.collect()).collect())
+    // // add in picard metrics file and mix channel with the outputs for samtools flagstat metrics
+    // MULTIQC_markdups_flagstat(picard_mark_duplicates.out.marked_dups_metrics.collect().mix(samtools_flagstat.out.flagstat.collect()).collect())
     
-    // feature counts for without marked duplications!!!
-    feature_counts_raw(STAR_align.out.star_alignment.collect(), STAR_index.out.gtf_file, "raw")
-    // feature counts for with marked duplications!!!
-    feature_counts_markdups(picard_mark_duplicates.out.marked_dups_bam.collect(), STAR_index.out.gtf_file, "markdups")
+    // // feature counts for without marked duplications!!!
+    // feature_counts_raw(STAR_align.out.star_alignment.collect(), STAR_index.out.gtf_file, "raw")
+    // // feature counts for with marked duplications!!!
+    // feature_counts_markdups(picard_mark_duplicates.out.marked_dups_bam.collect(), STAR_index.out.gtf_file, "markdups")
     
 
     // footer()
@@ -419,35 +420,34 @@ workflow {
     fastqc_results_pretrim = fastqc_pretrim.out.pretrim_qc_files
     multiqc_results_pretrim = MULTIQC_pretrim.out.report_pretrim
 
-    // comment out below if need to verify multiqc report first 
-    // fastp_trimmed = FASTP.out.trimmed
-    // fastp_reports = FASTP.out.reports
+    fastp_trimmed = FASTP.out.trimmed
+    fastp_reports = FASTP.out.reports
 
-    // fastqc_results = FASTQC.out.qc_files
+    fastqc_results = FASTQC.out.qc_files
     
-    // multiqc_results = MULTIQC.out.report
+    multiqc_results = MULTIQC.out.report
 
-    // star_index = STAR_index.out.star_index
-    // star_alignment = STAR_align.out.star_alignment
-    // star_logs = STAR_align.out.star_logs
+    star_index = STAR_index.out.star_index
+    star_alignment = STAR_align.out.star_alignment
+    star_logs = STAR_align.out.star_logs
 
-    // bai_files = samtools_index.out.bai_files
+    bai_files = samtools_index.out.bai_files
 
-    // flagstat = samtools_flagstat.out.flagstat
+    flagstat = samtools_flagstat.out.flagstat
 
-    // add_read_groups_bam = picard_add_read_groups.out.add_RG_bam
+    add_read_groups_bam = picard_add_read_groups.out.add_RG_bam
 
-    // marked_dups_bam = picard_mark_duplicates.out.marked_dups_bam
-    // marked_dups_metrics = picard_mark_duplicates.out.marked_dups_metrics
+    marked_dups_bam = picard_mark_duplicates.out.marked_dups_bam
+    marked_dups_metrics = picard_mark_duplicates.out.marked_dups_metrics
 
-    // multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
+    multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
 
-    // // // feature counts for without marked duplications!!!
-    // featurecounts_raw = feature_counts_raw.out.counts
-    // featurecounts_summary_raw = feature_counts_raw.out.summary
+    // // feature counts for without marked duplications!!!
+    featurecounts_raw = feature_counts_raw.out.counts
+    featurecounts_summary_raw = feature_counts_raw.out.summary
 
-    // featurecounts_markdups = feature_counts_markdups.out.counts
-    // featurecounts_summary_markdups = feature_counts_markdups.out.summary
+    featurecounts_markdups = feature_counts_markdups.out.counts
+    featurecounts_summary_markdups = feature_counts_markdups.out.summary
 
 }
 
