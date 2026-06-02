@@ -86,7 +86,7 @@ process retrieve_fastq {
 }
 
 process fastqc_pretrim {
-    conda "bioconda::fastqc=0.12.1 conda-forge::perl=5.32.0"    
+    conda "bioconda::fastqc=0.12.1" // conda-forge::perl=5.32.0"    
     
     input:
     path pretrim_fastq
