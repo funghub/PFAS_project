@@ -279,7 +279,7 @@ process feature_counts_markdups {
 // params.input = 'test_multiqc/*.fastq'
 
 // Add ability for user to insert location of fastq files and output folder (moved to config)
-params.input_dir = 'PFAS_Data_NF/PRJNA1137368' // Default input directory
+params.input_dir = 'PRJNA1137368' // Default input directory
 params.output_dir = 'results'     // Default output directory
 // params.input = "${params.input_dir}/*.fastq"
 
