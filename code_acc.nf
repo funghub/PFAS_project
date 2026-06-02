@@ -56,7 +56,7 @@ process retrieve_fastq {
     conda "bioconda::sra-tools=3.4.1 conda-forge::ossuuid"
 
     input:
-    path accession_numbers
+    val accession_number
 
     output:
     path "*.fastq", emit: pretrim_fastq
@@ -64,13 +64,13 @@ process retrieve_fastq {
     script:
     """
     # download all SRA accessions
-    # prefetch --option-file ${accession_numbers}
-    prefetch ${accession_numbers}
+    # prefetch --option-file ${accession_number}
+    prefetch ${accession_number}
     
     # read each line from txt file and into dump 1 at a time (slow need to separate file)
     # convert SRA to FASTQ file one at a time
-    # xargs -a ${accession_numbers} -n 1 fasterq-dump
-    fasterq-dump ${accession_numbers} --threads ${task.cpus}
+    # xargs -a ${accession_number} -n 1 fasterq-dump
+    fasterq-dump ${accession_number} --threads ${task.cpus}
     """
 }
 
