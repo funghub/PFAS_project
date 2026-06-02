@@ -52,7 +52,7 @@ process retrieve_accessions_numbers {
 
 process retrieve_fastq {
     // must download SRR_Acc_List.txt from SRA database before starting
-    conda "bioconda::sra-tools"
+    conda "bioconda::sra-tools=3.4.1"
 
     input:
     path accession_numbers
