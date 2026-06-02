@@ -63,7 +63,7 @@ process retrieve_fastq {
     script:
     """
     # download all SRA accessions
-    prefetch --option-files ${accession_numbers}
+    prefetch --option-file ${accession_numbers}
     
     # read each line from txt file and into dump 1 at a time
     # convert SRA to FASTQ file one at a time
