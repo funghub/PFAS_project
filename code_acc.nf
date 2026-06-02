@@ -4,8 +4,8 @@
 // REMEMBER TO CD into PFAS_Data_NF
 
 // Command used, but now run through github, replace file with link
-// nextflow run funghub/PFAS_project -profile spartan_hpc -latest -resume
-// nextflow run code.nf -profile spartan_hpc // this is for code stored on HPC
+// nextflow run funghub/PFAS_project --input PRJNA604830 -profile spartan_hpc -latest -resume
+// nextflow run code.nf --input PRJNA604830 -profile spartan_hpc -resume // this is for code stored on HPC
 
 // nextflow.enable.dsl=2
 
