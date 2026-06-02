@@ -92,7 +92,8 @@ process fastqc_pretrim {
     path pretrim_fastq
 
     output:
-    path "*_fastqc.{zip,html}", emit: pretrim_qc_files
+    // path "*_fastqc.{zip,html}", emit: pretrim_qc_files
+    path "*.{zip,html}", emit: pretrim_qc_files
 
     script:
     """
