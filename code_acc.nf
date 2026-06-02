@@ -64,7 +64,7 @@ process retrieve_sra {
     """
     # download all SRA accessions
     # prefetch --option-file ${accession_number}
-    prefetch ${accession_number} --outdir .
+    prefetch ${accession_number} --output-directory .
     """
 }
 
