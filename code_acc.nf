@@ -38,7 +38,7 @@ process retrieve_accessions_numbers {
     conda "bioconda::entrez-direct"
 
     input: 
-    SRA_accession_number
+    val SRA_accession_number
 
     output:
     path "SRR_Acc_List.txt", emit: accession_numbers_file
