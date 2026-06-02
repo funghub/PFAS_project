@@ -34,7 +34,23 @@ process footer {
     """
 }
 
-process retrieve_data {
+process retrieve_accessions_numbers {
+    conda "bioconda::entrez-direct"
+
+    input: 
+    SRA_accession_number
+
+    output:
+    path "SRR_Acc_List.txt", emit: accession_numbers_file
+
+    script:
+    """
+    esearch -db sra -query ${SRA_accession_number} | efetch -format runinfo | cut -d',' -f 1 | grep SRR > SRR_Acc_List.txt
+    """
+    // you can do grep -c to double check on the web if the number of items match
+}
+
+process retrieve_fastq {
     // must download SRR_Acc_List.txt from SRA database before starting
     conda "bioconda::prefetch"
 
@@ -66,7 +82,7 @@ process fastqc_pretrim {
 
     script:
     """
-    fastqc -t $SLURM_CPUS_PER_TASK ${pretrim_fastq}
+    fastqc -t ${task.cpus} ${pretrim_fastq}
     """
 }
 
@@ -116,7 +132,7 @@ process FASTQC {
 
     script:
     """
-    fastqc ${trimmed_fastq}
+    fastqc -t ${task.cpus} ${trimmed_fastq}
     """
 }
 
@@ -326,7 +342,6 @@ process feature_counts_markdups {
 
 // }
 
-params.input = "SRR_Acc_List.txt" // MUST UPLOAD from SRA
 params.output_dir = 'results'     // Default output directory
 // params.input = "${params.input_dir}/*.fastq"
 
@@ -351,28 +366,28 @@ workflow {
     FASTQ files -> FASTP trimmed files -> FASTQC files-> MULTIQC report Pipeline
     ----------------------
     Usage:
-    nextflow run funghub/PFAS_project --input [alternative name for SRR_Acc_List.txt] --output_dir [folder for results] -profile spartan_hpc -latest -resume
+    nextflow run funghub/PFAS_project --input [SRA accession number] --output_dir [folder for results] -profile spartan_hpc -latest -resume
     
     Usage (default):
-    nextflow run funghub/PFAS_project -profile spartan_hpc -latest -resume
+    nextflow run funghub/PFAS_project --input PRJNA604830 -profile spartan_hpc -latest -resume
 
     Options:
-      --input    Path to input accession number .txt file (keep in quotes!) (default: SRR_Acc_List.txt)
+      --input    Path to input SRA accession number (no default value)
       --output_dir   Directory to save results (default: results)
     """
     exit 0
     }
 
-    def accession_nums = channel.fromPath("${params.input}")
-        .ifEmpty { error "No .txt file found in: ${params.input}" }
+    def sra_accession_number = params.input
 
     // header()
 
-    retrieve_data(accession_nums)
-    fastqc_pretrim(retrieve_data.out.pretrim_fastq)
+    retrieve_accessions_numbers(sra_accession_number)
+    retrieve_fastq(retrieve_accessions_numbers.out.accession_numbers_file)
+    fastqc_pretrim(retrieve_fastq.out.pretrim_fastq)
     MULTIQC_pretrim(fastqc_pretrim.out.pretrim_qc_files.collect())
     
-    FASTP(retrieve_data.out.pretrim_fastq)
+    FASTP(retrieve_fastq.out.pretrim_fastq)
     FASTQC(FASTP.out.trimmed) // .trimmed specifically refers to the emit name given
     MULTIQC(FASTQC.out.qc_files.collect()) // must use .colect() with () to work
     STAR_index()
@@ -398,7 +413,9 @@ workflow {
 
     publish:
 
-    fastq_pretrim = retrieve_data.out.pretrim_fastq
+    retrieve_accessions_numbers = retrieve_accessions_numbers.out.accession_numbers_file
+
+    fastq_pretrim = retrieve_fastq.out.pretrim_fastq
     fastqc_results_pretrim = fastqc_pretrim.out.pretrim_qc_files
     multiqc_results_pretrim = MULTIQC_pretrim.out.report_pretrim
 
@@ -434,6 +451,10 @@ workflow {
 }
 
 output {
+
+    retrieve_accessions_numbers {
+        path "${params.output_dir}/pretrim/SRR_Acc_List.txt"
+    }
 
     fastq_pretrim {
         path "${params.output_dir}/pretrim/fastq_pretrim" // tells where to save outputs to
