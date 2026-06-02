@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 // change file name to code.nf when finished
-// REMEMBER TO CD into PFAS_Data_NF
+// REMEMBER TO CD into PFAS_Data_NF_ref
 
 // Command used, but now run through github, replace file with link
 // nextflow run funghub/PFAS_project -profile spartan_hpc -latest -resume
@@ -36,7 +36,7 @@ process footer {
 
 process FASTP {
     conda "bioconda::fastp"
-    // publishDir "PFAS_Data_NF/${task.index}/fastp_results", mode: 'copy'
+    // publishDir "PFAS_Data_NF_ref/${task.index}/fastp_results", mode: 'copy'
 
     input:
     path fastq
@@ -55,7 +55,7 @@ process FASTP {
 
 process FASTQC {
     conda "bioconda::fastqc=0.12.1" // using latest version might rid error of java.lang openjdk
-    // publishDir "PFAS_Data_NF/${task.index}/fastqc_results", mode: 'copy'
+    // publishDir "PFAS_Data_NF_ref/${task.index}/fastqc_results", mode: 'copy'
 
     input:
     path trimmed_fastq
@@ -71,7 +71,7 @@ process FASTQC {
 
 process MULTIQC {
     conda "bioconda::multiqc"
-    // publishDir "PFAS_Data_NF/${task.index}/multi_qc_results", mode: 'copy'
+    // publishDir "PFAS_Data_NF_ref/${task.index}/multi_qc_results", mode: 'copy'
     
     input:
     // path 'stats/*'
@@ -268,14 +268,14 @@ process feature_counts_markdups {
  * Pipeline parameters
  */
 // params {
-//     // input: Path = '/scratch/home/lfung/PFAS_Data_NF/test_multiqc/*.fastq'
+//     // input: Path = '/scratch/home/lfung/PFAS_Data_NF_ref/test_multiqc/*.fastq'
 
 //     // input: Path = 'test_multiqc/*.fastq' // assuming cd into test_runs
 //     input = 'test_multiqc/*.fastq' // assuming cd into test_runs (don't need path b/c already channel.fromPath)
 
 // }
 
-// make sure you CD is /PFAS_Data_NF
+// make sure you CD is /PFAS_Data_NF_ref
 // params.input = 'test_multiqc/*.fastq'
 
 // Add ability for user to insert location of fastq files and output folder (moved to config)
