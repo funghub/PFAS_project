@@ -471,93 +471,94 @@ output {
         mode 'copy'
     }
 
-    // KEEP
-    fastp_trimmed {
-        path "${params.output_dir}/fastp_results/trimmed" // tells where to save outputs to
-        // without mode copy below, we are softlinking
-        mode 'copy'
-    }
+    // comment out below if need to verify pretrim multiqc report first 
+//     // KEEP
+//     fastp_trimmed {
+//         path "${params.output_dir}/fastp_results/trimmed" // tells where to save outputs to
+//         // without mode copy below, we are softlinking
+//         mode 'copy'
+//     }
 
-    fastp_reports {
-        path "${params.output_dir}/fastp_results/reports" // tells where to save outputs to
-        // without mode copy below, we are softlinking
-        // mode 'copy'
-    }
+//     fastp_reports {
+//         path "${params.output_dir}/fastp_results/reports" // tells where to save outputs to
+//         // without mode copy below, we are softlinking
+//         // mode 'copy'
+//     }
 
-    // KEEP
-    fastqc_results {
-        path "${params.output_dir}/fastqc_results"
-        // mode 'copy'
-    }
+//     // KEEP
+//     fastqc_results {
+//         path "${params.output_dir}/fastqc_results"
+//         // mode 'copy'
+//     }
 
-    multiqc_results {
-        path "${params.output_dir}/multi_qc_results"
-        mode 'copy'
-    }
+//     multiqc_results {
+//         path "${params.output_dir}/multi_qc_results"
+//         mode 'copy'
+//     }
 
-    star_index {
-        path "${params.output_dir}/STAR_hg38_index"
-        // mode 'copy'
-    }
+//     star_index {
+//         path "${params.output_dir}/STAR_hg38_index"
+//         // mode 'copy'
+//     }
 
-    star_alignment {
-        path "${params.output_dir}/STAR_alignment"
-        mode 'copy'
-    }
+//     star_alignment {
+//         path "${params.output_dir}/STAR_alignment"
+//         mode 'copy'
+//     }
 
-    star_logs {
-        path "${params.output_dir}/STAR_logs"
-        // mode 'copy'
-    }
+//     star_logs {
+//         path "${params.output_dir}/STAR_logs"
+//         // mode 'copy'
+//     }
 
-    // all the BAI files per BAM file
-    bai_files {
-        path "${params.output_dir}/STAR_alignment"
-        mode 'copy'
-    }
+//     // all the BAI files per BAM file
+//     bai_files {
+//         path "${params.output_dir}/STAR_alignment"
+//         mode 'copy'
+//     }
 
-    flagstat {
-        path "${params.output_dir}/STAR_flagstat"
-        // mode 'copy'
-    }
+//     flagstat {
+//         path "${params.output_dir}/STAR_flagstat"
+//         // mode 'copy'
+//     }
 
-    add_read_groups_bam {
-        path "${params.output_dir}/picard/add_RG_bam"
-        mode 'copy'
-    }
+//     add_read_groups_bam {
+//         path "${params.output_dir}/picard/add_RG_bam"
+//         mode 'copy'
+//     }
 
-    marked_dups_bam {
-        path "${params.output_dir}/picard/marked_dups_bam"
-        mode 'copy'
-    }
+//     marked_dups_bam {
+//         path "${params.output_dir}/picard/marked_dups_bam"
+//         mode 'copy'
+//     }
 
-    marked_dups_metrics {
-        path "${params.output_dir}/picard/marked_dups_metrics"
-        mode 'copy'
-    }
+//     marked_dups_metrics {
+//         path "${params.output_dir}/picard/marked_dups_metrics"
+//         mode 'copy'
+//     }
 
-    multiqc_markdups_flagstat {
-        path "${params.output_dir}/multi_qc_results"
-        mode 'copy'
-    }
+//     multiqc_markdups_flagstat {
+//         path "${params.output_dir}/multi_qc_results"
+//         mode 'copy'
+//     }
 
-    featurecounts_raw {
-        path "${params.output_dir}/featurecounts"
-        mode 'copy'
-    }
+//     featurecounts_raw {
+//         path "${params.output_dir}/featurecounts"
+//         mode 'copy'
+//     }
 
-    featurecounts_summary_raw {
-        path "${params.output_dir}/featurecounts"
-        mode 'copy'
-    }
+//     featurecounts_summary_raw {
+//         path "${params.output_dir}/featurecounts"
+//         mode 'copy'
+//     }
 
-    featurecounts_markdups {
-        path "${params.output_dir}/featurecounts"
-        mode 'copy'
-    }
+//     featurecounts_markdups {
+//         path "${params.output_dir}/featurecounts"
+//         mode 'copy'
+//     }
 
-    featurecounts_summary_markdups {
-        path "${params.output_dir}/featurecounts"
-        mode 'copy'
-    }
+//     featurecounts_summary_markdups {
+//         path "${params.output_dir}/featurecounts"
+//         mode 'copy'
+//     }
 }
