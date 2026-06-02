@@ -50,6 +50,7 @@ process retrieve_accessions_numbers {
     // you can do grep -c to double check on the web if the number of items match
 }
 
+
 process retrieve_fastq {
     // must download SRR_Acc_List.txt from SRA database before starting
     conda "bioconda::sra-tools=3.4.1 conda-forge::ossuuid"
@@ -63,11 +64,13 @@ process retrieve_fastq {
     script:
     """
     # download all SRA accessions
-    prefetch --option-file ${accession_numbers}
+    # prefetch --option-file ${accession_numbers}
+    prefetch ${accession_numbers}
     
-    # read each line from txt file and into dump 1 at a time
+    # read each line from txt file and into dump 1 at a time (slow need to separate file)
     # convert SRA to FASTQ file one at a time
-    xargs -a ${accession_numbers} -n 1 fasterq-dump
+    # xargs -a ${accession_numbers} -n 1 fasterq-dump
+    fasterq-dump ${accession_numbers} --threads ${task.cpus}
     """
 }
 
@@ -383,7 +386,16 @@ workflow {
     // header()
 
     retrieve_accessions_numbers(sra_accession_number)
-    retrieve_fastq(retrieve_accessions_numbers.out.accession_numbers_file)
+
+    // split the txt file into one accession number per channel
+    // this replaces xargs in the bash script in retrieve_fastq which was inefficient
+    retrieve_accessions_numbers.out.accession_numbers_file
+        .splitText()
+        .map { it.trim() } // for each item in txt file, trim off white spaces char
+        .filter {it} // get lines where it (each item) is true
+        .set { accessions_ch } // set it as a new variable for channel
+
+    retrieve_fastq(accessions_ch)
     fastqc_pretrim(retrieve_fastq.out.pretrim_fastq)
     MULTIQC_pretrim(fastqc_pretrim.out.pretrim_qc_files.collect())
     
