@@ -50,27 +50,38 @@ process retrieve_accessions_numbers {
     // you can do grep -c to double check on the web if the number of items match
 }
 
-
-process retrieve_fastq {
-    // must download SRR_Acc_List.txt from SRA database before starting
+process retrieve_sra {
     conda "bioconda::sra-tools=3.4.1 conda-forge::ossuuid"
 
     input:
     val accession_number
 
     output:
-    path "*.fastq", emit: pretrim_fastq
+    path "*.sra", emit: sra_files
+
 
     script:
     """
     # download all SRA accessions
     # prefetch --option-file ${accession_number}
     prefetch ${accession_number}
-    
+    """
+}
+
+process retrieve_fastq {
+    conda "bioconda::sra-tools=3.4.1 conda-forge::ossuuid"
+
+    input:
+    path sra_file // path not val because receiving .sra file from channel
+
+    output:
+    path "*.fastq", emit: pretrim_fastq
+
+    script:
+    """    
     # read each line from txt file and into dump 1 at a time (slow need to separate file)
     # convert SRA to FASTQ file one at a time
-    # xargs -a ${accession_number} -n 1 fasterq-dump
-    fasterq-dump ${accession_number} --threads ${task.cpus}
+    fasterq-dump ${sra_file} --threads ${task.cpus}
     """
 }
 
@@ -395,7 +406,8 @@ workflow {
         .filter {it} // get lines where it (each item) is true
         .set { accessions_ch } // set it as a new variable for channel
 
-    retrieve_fastq(accessions_ch)
+    retrieve_sra(accessions_ch)
+    retrieve_fastq(retrieve_sra.out.sra_files)
     fastqc_pretrim(retrieve_fastq.out.pretrim_fastq)
     MULTIQC_pretrim(fastqc_pretrim.out.pretrim_qc_files.collect())
     
@@ -428,6 +440,7 @@ workflow {
 
     retrieve_accessions_numbers = retrieve_accessions_numbers.out.accession_numbers_file
 
+    sra_files = retrieve_sra.out.sra_files
     fastq_pretrim = retrieve_fastq.out.pretrim_fastq
     fastqc_results_pretrim = fastqc_pretrim.out.pretrim_qc_files
     multiqc_results_pretrim = MULTIQC_pretrim.out.report_pretrim
@@ -468,6 +481,10 @@ output {
 
     retrieve_accessions_numbers {
         path "${params.output_dir}/pretrim/SRR_Acc_List.txt"
+    }
+
+    sra_files {
+        path "${params.output_dir}/pretrim/sra_files"
     }
 
     fastq_pretrim {
