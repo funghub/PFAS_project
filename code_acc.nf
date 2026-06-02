@@ -57,14 +57,14 @@ process retrieve_sra {
     val accession_number
 
     output:
-    path "*.sra", emit: sra_files
+    path "${accession_number}/${accession_number}.sra", emit: sra_files
 
 
     script:
     """
     # download all SRA accessions
     # prefetch --option-file ${accession_number}
-    prefetch ${accession_number}
+    prefetch ${accession_number} --outdir .
     """
 }
 
