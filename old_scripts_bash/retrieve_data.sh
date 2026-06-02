@@ -27,6 +27,7 @@ echo ""
 
 # download all SRA accessions
 prefetch --option-files SRR_Acc_List.txt
+# or --option-file in newer versions?
 
 # read each line from txt file and into dump 1 at a time
 # convert SRA to FASTQ file one at a time
