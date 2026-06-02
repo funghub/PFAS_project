@@ -419,34 +419,35 @@ workflow {
     fastqc_results_pretrim = fastqc_pretrim.out.pretrim_qc_files
     multiqc_results_pretrim = MULTIQC_pretrim.out.report_pretrim
 
-    fastp_trimmed = FASTP.out.trimmed
-    fastp_reports = FASTP.out.reports
+    // comment out below if need to verify multiqc report first 
+    // fastp_trimmed = FASTP.out.trimmed
+    // fastp_reports = FASTP.out.reports
 
-    fastqc_results = FASTQC.out.qc_files
+    // fastqc_results = FASTQC.out.qc_files
     
-    multiqc_results = MULTIQC.out.report
+    // multiqc_results = MULTIQC.out.report
 
-    star_index = STAR_index.out.star_index
-    star_alignment = STAR_align.out.star_alignment
-    star_logs = STAR_align.out.star_logs
+    // star_index = STAR_index.out.star_index
+    // star_alignment = STAR_align.out.star_alignment
+    // star_logs = STAR_align.out.star_logs
 
-    bai_files = samtools_index.out.bai_files
+    // bai_files = samtools_index.out.bai_files
 
-    flagstat = samtools_flagstat.out.flagstat
+    // flagstat = samtools_flagstat.out.flagstat
 
-    add_read_groups_bam = picard_add_read_groups.out.add_RG_bam
+    // add_read_groups_bam = picard_add_read_groups.out.add_RG_bam
 
-    marked_dups_bam = picard_mark_duplicates.out.marked_dups_bam
-    marked_dups_metrics = picard_mark_duplicates.out.marked_dups_metrics
+    // marked_dups_bam = picard_mark_duplicates.out.marked_dups_bam
+    // marked_dups_metrics = picard_mark_duplicates.out.marked_dups_metrics
 
-    multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
+    // multiqc_markdups_flagstat = MULTIQC_markdups_flagstat.out.report_markdups_flagstat
 
-    // // feature counts for without marked duplications!!!
-    featurecounts_raw = feature_counts_raw.out.counts
-    featurecounts_summary_raw = feature_counts_raw.out.summary
+    // // // feature counts for without marked duplications!!!
+    // featurecounts_raw = feature_counts_raw.out.counts
+    // featurecounts_summary_raw = feature_counts_raw.out.summary
 
-    featurecounts_markdups = feature_counts_markdups.out.counts
-    featurecounts_summary_markdups = feature_counts_markdups.out.summary
+    // featurecounts_markdups = feature_counts_markdups.out.counts
+    // featurecounts_summary_markdups = feature_counts_markdups.out.summary
 
 }
 
